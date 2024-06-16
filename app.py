@@ -41,10 +41,12 @@ def main(file_path):
     worksheet4.write(1, 1, 'This sheet shows the annual metrics of the manager.')
     worksheet3.write(2, 1, 'The table below has details on annual metrics and the largest Alpha drawdowns')
     # Generate annual metrics 
-    fig5, df2 = annual_metrics(mw, bw, price)
-    write_plot_to_excel(worksheet4, fig5, 'B5')
+    fig5, df2, df3 = annual_metrics(mw, bw, price)
+    write_dataframe_to_excel(worksheet4, df2, 1, 1)
 
-    write_dataframe_to_excel(worksheet4, df2, 35, 1)
+    write_dataframe_to_excel(worksheet4, df3, 8, 1)
+
+    write_plot_to_excel(worksheet4, fig5, 'B17')
 
     workbook.close()
 

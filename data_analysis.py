@@ -201,10 +201,11 @@ def annual_metrics(mw, bw, price):
     drawdowns = 0
     
     i = 0
+    Flag = True
     # Proceed only if there are elements and fewer than 3 drawdowns
-    while len(alpha_arr) > 0 and drawdowns < 3:
+    while len(alpha_arr) > 0 and drawdowns < 3 and Flag:
         curr_max = float("-inf")
-        largest_drawdown = float("-inf")
+        largest_drawdown = 0
         start_index = 0
         end_index = 0
         i = 0
@@ -222,30 +223,29 @@ def annual_metrics(mw, bw, price):
                 curr_max = alpha
                 start_index = i
                 start_date = date
-                i += 1
-                continue
             
             diff = curr_max - alpha
+
             if diff > largest_drawdown:
                 largest_drawdown = diff
                 end_index = i
                 end_date = date
+                largest_drawdown_info = [start_date, end_date, largest_drawdown, start_index, i]
+
 
             i += 1
         
-        if largest_drawdown > 0:
-            alpha_drawdowns.append((start_date, end_date, largest_drawdown))
-            alpha_periods[start_index] = end_index
+        if largest_drawdown > 0 and start_index != end_index:
+            alpha_drawdowns.append(largest_drawdown_info[0:3])
+            alpha_periods[largest_drawdown_info[3]] = largest_drawdown_info[4]
             drawdowns += 1
+            
         else:
+            Flag = False
             break  # Break if no drawdown is found
-    
+
     alpha_drawdowns_df = pd.DataFrame(alpha_drawdowns, columns=['Start', 'End', 'Magnitude'])
-    print(alpha_drawdowns_df)
-    
+
     return fig, df1, alpha_drawdowns_df
 
 annual_metrics(mw, bw, price)
-
-
-
